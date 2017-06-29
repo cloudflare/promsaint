@@ -1,0 +1,15 @@
+version: '2'
+services:
+  promsaint:
+    build: .
+    ports:
+      - "8080:8080"
+    environment:
+      - PORT0=8080
+      - ALERTMANAGER=http://alertmanager:9093
+      - FORGET_AGE=1m
+      - LOG_LEVEL=debug
+  alertmanager:
+    image: prom/alertmanager
+    ports:
+      - "9093:9093"
