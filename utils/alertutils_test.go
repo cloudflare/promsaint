@@ -28,6 +28,17 @@ var testAlert2 = &models.Alert{
 	Note:             "http://reddit.com/",
 }
 
+var testAlert3 = &models.Alert{
+	Type:             "service",
+	Host:             "bar",
+	Service:          "foo",
+	Notify:           "hipchat-bar hipchat-cafe",
+	NotificationType: "PROBLEM",
+	State:            "CRITICAL",
+	Message:          "It's dead jim",
+	Note:             "http://reddit.com/",
+}
+
 func TestKey(t *testing.T) {
 	key := Key(testAlert)
 	key2 := Key(testAlert)
@@ -41,4 +52,19 @@ func TestKey(t *testing.T) {
 	if key == key3 {
 		t.Fatal("Hashes match for different object")
 	}
+}
+
+func TestMerge(t *testing.T) {
+	pAlert := models.InternalAlert{}
+	Merge(&pAlert, testAlert)
+	if got := pAlert.PrometheusAlert.Labels["notify"]; string(got) != testAlert.Notify {
+		t.Errorf("Merge failed: got %#v, expect %#v", got, testAlert.Notify)
+	}
+
+	pAlert = models.InternalAlert{}
+	Merge(&pAlert, testAlert3)
+	if got := pAlert.PrometheusAlert.Labels["notify"]; string(got) != testAlert3.Notify {
+		t.Errorf("Merge failed: got %#v, expect %#v", got, testAlert3.Notify)
+	}
+
 }

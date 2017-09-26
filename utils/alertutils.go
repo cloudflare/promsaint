@@ -54,7 +54,10 @@ func Merge(pAlert *models.InternalAlert, alert *models.Alert) {
 	}
 
 	log.Debugf("NOTIFY: %s -> %s", string(pAlert.PrometheusAlert.Labels["notify"]), alert.Notify)
-	notifyArgv := strings.Split(string(pAlert.PrometheusAlert.Labels["notify"]), " ")
+	var notifyArgv []string
+	if v, ok := pAlert.PrometheusAlert.Labels["notify"]; ok {
+		notifyArgv = strings.Split(string(v), " ")
+	}
 
 	notifyMap := map[string]bool{}
 	for _, value := range notifyArgv {
@@ -65,8 +68,8 @@ func Merge(pAlert *models.InternalAlert, alert *models.Alert) {
 		notifyMap[alert.Notify] = true
 	}
 
-	notifySlice := make([]string, len(notifyMap))
-	for key, _ := range notifyMap {
+	var notifySlice []string
+	for key := range notifyMap {
 		notifySlice = append(notifySlice, key)
 	}
 
