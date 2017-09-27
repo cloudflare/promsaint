@@ -53,14 +53,14 @@ func TestKey(t *testing.T) {
 		t.Fatal("Hashes match for different object")
 	}
 
-	if got := Key(testAlert3); got != key2 {
-		t.Fatalf("Hashes should have matched. got %#v, want %#v", got, key2)
+	if got := Key(testAlert3); got != key3 {
+		t.Fatalf("Hashes should have matched. got %#v, want %#v", got, key3)
 	}
 }
 
 func TestMerge(t *testing.T) {
 	pAlert := models.InternalAlert{}
-	Merge(&pAlert, testAlert)
+	Merge(&pAlert, testAlert2)
 	if got := pAlert.PrometheusAlert.Labels["notify"]; string(got) != testAlert.Notify {
 		t.Errorf("Merge failed: got %#v, want %#v", got, testAlert.Notify)
 	}
