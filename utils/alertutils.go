@@ -44,7 +44,7 @@ func Key(alert *models.Alert) string {
  * type LabelValue string
  */
 
-// Merge a new hipchat alert into an existing prometheus alert (or an empty prometheus struct if the alert doesn't already exist)
+// Merge a new nagios alert into an existing prometheus alert (or an empty prometheus struct if the alert doesn't already exist)
 func Merge(pAlert *models.InternalAlert, alert *models.Alert) {
 	var alertname string
 	if alert.Type == "host" {
