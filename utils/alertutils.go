@@ -44,7 +44,7 @@ func Key(alert *models.Alert) string {
  * type LabelValue string
  */
 
-// Merge a new hipchat alert into an existing prometheus alert (or an empty prometheus struct if the alert doesn't already exist)
+// Merge a new nagios alert into an existing prometheus alert (or an empty prometheus struct if the alert doesn't already exist)
 func Merge(pAlert *models.InternalAlert, alert *models.Alert) {
 	var alertname string
 	if alert.Type == "host" {
@@ -54,18 +54,18 @@ func Merge(pAlert *models.InternalAlert, alert *models.Alert) {
 	}
 
 	log.Debugf("NOTIFY: %s -> %s", string(pAlert.PrometheusAlert.Labels["notify"]), alert.Notify)
-	notifyArgv := strings.Split(string(pAlert.PrometheusAlert.Labels["notify"]), " ")
-
 	notifyMap := map[string]bool{}
-	for _, value := range notifyArgv {
-		notifyMap[value] = true
+	if v := pAlert.PrometheusAlert.Labels["notify"]; v != "" {
+		for _, value := range strings.Split(string(v), " ") {
+			notifyMap[value] = true
+		}
 	}
 
 	if alert.Notify != "" {
 		notifyMap[alert.Notify] = true
 	}
 
-	notifySlice := make([]string, len(notifyMap))
+	var notifySlice []string
 	for key, _ := range notifyMap {
 		notifySlice = append(notifySlice, key)
 	}
